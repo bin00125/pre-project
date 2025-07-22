@@ -1,0 +1,44 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+}
+body {
+  background: gray;
+}
+#root {
+  width: 100%;
+}
+section {
+  max-width: 1400px;
+  margin: 50px auto;
+  padding: 20px;
+  background: #ffffff;
+  h2 {
+    margin-bottom: 20px;
+  }
+}
+
+.place-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.3%;
+  li {
+    position: relative;
+    width: 24%;
+    img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    span {
+      position: absolute;
+      right: 8px;
+      bottom: 12px;
+      color: #ffffff;
+      background: #252525;
+      padding: 5px;
+    }
+  }
+}
