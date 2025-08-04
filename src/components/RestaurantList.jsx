@@ -1,36 +1,51 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
+import { fetchFavoriteAdd, fetchPlaces } from "../api/placeApi";
+import Card from "./Card";
 
 export default function RestaurantList() {
   const [place, setPlace] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   useEffect(() => {
-    const fetchPlaces = async () => {
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        const res = await axios.get("http://localhost:3000/places");
-        console.log("데이터", res.data.places);
-        setPlace(res.data.places);
+        const data = await fetchPlaces();
+        setPlace(data);
       } catch (err) {
-        console.error(err);
+        if (err.response && err.response.status === 404) {
+          setError("404에러");
+        } else {
+          setError("데이터를 불러오는 중 오류");
+        }
+      } finally {
+        setLoading(false);
       }
     };
-    fetchPlaces();
+    fetchData();
   }, []);
 
-  return (
-    <section>
-      <h2>맛집 목록</h2>
-      <ul className="place-list">
-        {place.length > 0 ? (
-          place.map((item) => (
-            <li key={item.id}>
-              <span>{item.title}</span>
-              <img src={`http://localhost:3000/${item.image.src}`} />
-            </li>
-          ))
-        ) : (
-          <li>로딩</li>
-        )}
-      </ul>
-    </section>
+  const handleFavorite = async (item) => {
+    try {
+      const res = await fetchFavoriteAdd(item);
+      alert(res.message || "찜 완료");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  return loading ? (
+    <div className="loading">
+      <p>맛집을 불러오는 중입니다</p>
+    </div>
+  ) : error ? (
+    <div className="error">
+      <p>{error}</p>
+    </div>
+  ) : (
+    <>
+      <Card place={place} handleFavorite={handleFavorite} showFavoriteButton={true} />
+    </>
   );
 }
